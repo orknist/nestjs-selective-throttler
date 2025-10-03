@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+
+# Generated code
+src/generated/
+
+# Logs
+*.log
+
+# Environment variables
+.env*
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store

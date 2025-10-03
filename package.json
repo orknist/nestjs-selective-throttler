@@ -1,0 +1,114 @@
+{
+  "name": "nestjs-selective-throttler",
+  "version": "1.0.0",
+  "description": "A NestJS package that provides true selective throttling capabilities, applying only the named throttlers explicitly declared in route decorators.",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/cjs/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "types": "./dist/cjs/index.d.ts"
+    },
+    "./decorators": {
+      "require": "./.generated/decorators.js",
+      "import": "./.generated/decorators.js",
+      "types": "./.generated/decorators.d.ts"
+    },
+    "./throttler-names": {
+      "require": "./.generated/throttler-names.js",
+      "import": "./.generated/throttler-names.js",
+      "types": "./.generated/throttler-names.d.ts"
+    }
+  },
+  "files": [
+    "dist/**/*",
+    "scripts/**/*",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "npm run build:cjs && npm run build:esm",
+    "build:cjs": "tsc -p tsconfig.build.json",
+    "build:esm": "tsc -p tsconfig.esm.json",
+    "build:watch": "npm run build:cjs -- --watch",
+    "clean": "rimraf dist",
+    "generate": "node scripts/generate-throttler-names.js",
+    "prebuild": "npm run clean",
+    "prepublishOnly": "npm run lint && npm run build",
+    "prepack": "npm run build",
+    "lint": "eslint \"src/**/*.ts\" --ignore-pattern \"**/*.spec.ts\" --ignore-pattern \"**/*.test.ts\"",
+    "lint:fix": "eslint \"src/**/*.ts\" --ignore-pattern \"**/*.spec.ts\" --ignore-pattern \"**/*.test.ts\" --fix",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\"",
+    "typecheck": "tsc --noEmit",
+    "validate": "npm run lint && npm run typecheck",
+    "publish:dry-run": "npm publish --dry-run",
+    "release": "npm run validate && npm run build && npm publish"
+  },
+  "keywords": [
+    "nestjs",
+    "throttler",
+    "rate-limiting",
+    "selective",
+    "guard",
+    "typescript",
+    "nodejs",
+    "rate-limit",
+    "api-throttling",
+    "request-limiting",
+    "nestjs-guard",
+    "throttle-decorator",
+    "selective-throttling",
+    "named-throttlers",
+    "throttler-override",
+    "route-throttling"
+  ],
+  "author": "Orkun",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/orknist/nestjs-selective-throttler.git"
+  },
+  "bugs": {
+    "url": "https://github.com/orknist/nestjs-selective-throttler/issues"
+  },
+  "homepage": "https://github.com/orknist/nestjs-selective-throttler#readme",
+  "peerDependencies": {
+    "@nestjs/common": "^11.1.6",
+    "@nestjs/core": "^11.1.6",
+    "@nestjs/throttler": "^6.4.0",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2"
+  },
+  "devDependencies": {
+    "@nestjs/common": "^11.1.6",
+    "@nestjs/core": "^11.1.6",
+    "@nestjs/platform-express": "^11.1.6",
+    "@nestjs/throttler": "^6.4.0",
+    "@types/node": "^24.6.1",
+    "@typescript-eslint/eslint-plugin": "^8.45.0",
+    "@typescript-eslint/parser": "^8.45.0",
+    "eslint": "^9.36.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.6.2",
+    "reflect-metadata": "^0.2.2",
+    "rimraf": "^6.0.1",
+    "rxjs": "^7.8.2",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/orknist"
+  }
+}
