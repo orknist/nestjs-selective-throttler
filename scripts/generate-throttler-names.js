@@ -384,7 +384,12 @@ module.exports = {
 }
 
 function main() {
-  console.log('🔍 Scanning for throttler decorators and module definitions...');
+  // Check for --silent flag
+  const isSilent = process.argv.includes('--silent');
+
+  if (!isSilent) {
+    console.log('🔍 Scanning for throttler decorators and module definitions...');
+  }
 
   // Scan current working directory
   const files = scanDirectory(process.cwd());
@@ -428,28 +433,32 @@ function main() {
         });
       }
     } catch (error) {
-      console.warn(`  ⚠️  Could not read ${file}: ${error.message}`);
+      if (!isSilent) {
+        console.warn(`  ⚠️  Could not read ${file}: ${error.message}`);
+      }
     }
   }
 
   // Display detailed file analysis
-  console.log();
-  console.log('📋 DETAILED ANALYSIS BY FILE:');
-  console.log('═'.repeat(80));
-
-  fileAnalysis.forEach(analysis => {
-    console.log(`📁 ${analysis.file}`);
-
-    if (analysis.decorators.length > 0) {
-      console.log(`   🎯 Decorators: ${analysis.decorators.sort().join(', ')}`);
-    }
-
-    if (analysis.modules.length > 0) {
-      console.log(`   ⚙️  Modules:    ${analysis.modules.sort().join(', ')}`);
-    }
-
+  if (!isSilent) {
     console.log();
-  });
+    console.log('📋 DETAILED ANALYSIS BY FILE:');
+    console.log('═'.repeat(80));
+
+    fileAnalysis.forEach(analysis => {
+      console.log(`📁 ${analysis.file}`);
+
+      if (analysis.decorators.length > 0) {
+        console.log(`   🎯 Decorators: ${analysis.decorators.sort().join(', ')}`);
+      }
+
+      if (analysis.modules.length > 0) {
+        console.log(`   ⚙️  Modules:    ${analysis.modules.sort().join(', ')}`);
+      }
+
+      console.log();
+    });
+  }
 
   const throttlerNamesArray = Array.from(allThrottlerNames).sort();
   const decoratorOnlyNames = Array.from(allDecoratorNames).filter(name => !allModuleNames.has(name));
@@ -457,21 +466,24 @@ function main() {
   const usedAndDefinedNames = Array.from(allDecoratorNames).filter(name => allModuleNames.has(name));
 
   // Summary report
-  console.log('📊 THROTTLER ANALYSIS SUMMARY:');
-  console.log('═'.repeat(80));
-  console.log(`✅ Total discovered throttlers: ${throttlerNamesArray.length}`);
-  console.log(`🎯 Used in decorators: ${allDecoratorNames.size}`);
-  console.log(`⚙️  Defined in modules: ${allModuleNames.size}`);
-  console.log(`✅ Properly used & defined: ${usedAndDefinedNames.length}`);
-  console.log();
-
-  if (usedAndDefinedNames.length > 0) {
-    console.log('✅ PROPERLY CONFIGURED THROTTLERS:');
-    console.log(`   ${usedAndDefinedNames.sort().join(', ')}`);
-    console.log('   These throttlers are correctly defined in modules and used in decorators.');
+  if (!isSilent) {
+    console.log('📊 THROTTLER ANALYSIS SUMMARY:');
+    console.log('═'.repeat(80));
+    console.log(`✅ Total discovered throttlers: ${throttlerNamesArray.length}`);
+    console.log(`🎯 Used in decorators: ${allDecoratorNames.size}`);
+    console.log(`⚙️  Defined in modules: ${allModuleNames.size}`);
+    console.log(`✅ Properly used & defined: ${usedAndDefinedNames.length}`);
     console.log();
+
+    if (usedAndDefinedNames.length > 0) {
+      console.log('✅ PROPERLY CONFIGURED THROTTLERS:');
+      console.log(`   ${usedAndDefinedNames.sort().join(', ')}`);
+      console.log('   These throttlers are correctly defined in modules and used in decorators.');
+      console.log();
+    }
   }
 
+  // Always show warnings (even in silent mode) - these are important issues
   if (decoratorOnlyNames.length > 0) {
     console.log('⚠️  MISSING MODULE DEFINITIONS:');
     console.log(`   ${decoratorOnlyNames.sort().join(', ')}`);
@@ -560,7 +572,7 @@ function main() {
   }
 
   // Multi-module analysis
-  if (moduleFiles.length > 1) {
+  if (!isSilent && moduleFiles.length > 1) {
     console.log('🔄 MULTI-MODULE SETUP DETECTED:');
     console.log('   Multiple files define throttler modules. Ensure all required throttlers');
     console.log('   are available in the modules where they will be used.');
@@ -572,7 +584,7 @@ function main() {
     console.log();
   }
 
-  // Report cross-module issues
+  // Report cross-module issues (always show critical errors)
   if (crossModuleIssues.length > 0) {
     console.log('❌ CROSS-MODULE THROTTLER ISSUES DETECTED:');
     console.log('═'.repeat(80));
@@ -622,14 +634,21 @@ function main() {
   const throttlerNamesDtsPath = path.join(outputDir, 'throttler-names.d.ts');
   fs.writeFileSync(throttlerNamesDtsPath, throttlerNamesDtsContent);
 
-  console.log('🎉 CODE GENERATION COMPLETED:');
-  console.log('═'.repeat(80));
-  console.log(`📁 ${path.relative(process.cwd(), throttlerNamesPath)}`);
-  console.log(`📁 ${path.relative(process.cwd(), decoratorsPath)}`);
-  console.log(`📁 ${path.relative(process.cwd(), decoratorsDtsPath)}`);
-  console.log(`📁 ${path.relative(process.cwd(), throttlerNamesDtsPath)}`);
-  console.log();
-  console.log(`🚀 Generated decorators with ${throttlerNamesArray.length} throttler names ready for use!`);
+  if (!isSilent) {
+    // Sort generated file paths for consistent output
+    const generatedFiles = [
+      path.relative(process.cwd(), decoratorsPath),
+      path.relative(process.cwd(), decoratorsDtsPath),
+      path.relative(process.cwd(), throttlerNamesPath),
+      path.relative(process.cwd(), throttlerNamesDtsPath)
+    ].sort();
+
+    console.log('🎉 CODE GENERATION COMPLETED:');
+    console.log('═'.repeat(80));
+    generatedFiles.forEach(file => console.log(`📁 ${file}`));
+    console.log();
+    console.log(`🚀 Generated decorators with ${throttlerNamesArray.length} throttler names ready for use!`);
+  }
 }
 
 if (require.main === module) {

@@ -102,10 +102,13 @@ export class AppModule {}
   "scripts": {
     "prebuild": "npm run generate",
     "generate": "node node_modules/nestjs-selective-throttler/scripts/generate-throttler-names.js",
+    "generate:silent": "node node_modules/nestjs-selective-throttler/scripts/generate-throttler-names.js --silent",
     "build": "nest build"
   }
 }
 ```
+
+**Silent Mode**: Use `npm run generate:silent` to suppress informational output during builds. Important warnings (missing definitions, cross-module issues) are always shown, even in silent mode. This is useful for CI/CD pipelines where you want to see only critical issues.
 
 ### 3. Use Selective Throttling in Controllers
 

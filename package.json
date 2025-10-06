@@ -1,6 +1,6 @@
 {
   "name": "nestjs-selective-throttler",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A NestJS package that provides true selective throttling capabilities, applying only the named throttlers explicitly declared in route decorators.",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -36,6 +36,7 @@
     "build:watch": "npm run build:cjs -- --watch",
     "clean": "rimraf dist",
     "generate": "node scripts/generate-throttler-names.js",
+    "generate:silent": "node scripts/generate-throttler-names.js --silent",
     "prebuild": "npm run clean",
     "prepublishOnly": "npm run lint && npm run build",
     "prepack": "npm run build",

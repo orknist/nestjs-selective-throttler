@@ -5,7 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - 2024-12-27
+## [1.0.1] - 2025-01-06
+
+### Added
+- Silent mode support for code generation script (`--silent` flag)
+- `generate:silent` npm script for CI/CD pipelines
+
+### Changed
+- Code generation script now shows warnings (missing definitions, cross-module issues) even in silent mode
+- Generated file list in completion message is now sorted alphabetically
+- Reduced console output verbosity - informational messages hidden in silent mode
+
+### Improved
+- Better CI/CD integration with silent mode that only shows critical issues
+- More consistent output formatting in code generation completion message
+
+## [1.0.0] - 2025-10-03
 
 ### Added
 - Initial release of `nestjs-selective-throttler`
